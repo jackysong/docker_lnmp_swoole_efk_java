@@ -1,0 +1,45 @@
+FROM registry.cn-hangzhou.aliyuncs.com/kai12/php:7.1
+MAINTAINER k12-PHP "szb345@gmail.com"
+
+ADD php.ini    /usr/local/etc/php/php.ini
+ADD php-fpm.conf    /usr/local/etc/php-fpm.conf
+
+ENV WORK_HOME /home/php
+RUN mkdir -p ${WORK_HOME}
+RUN mkdir -p /opt/log/supervisor
+COPY . ${WORK_HOME}
+
+
+RUN  pecl install inotify \
+&& pecl install swoole \
+&& docker-php-ext-enable inotify \
+&& docker-php-ext-enable swoole
+
+
+RUN apt-get update && apt-get install -y \
+    supervisor \
+    && apt-get clean
+
+
+#xdebug
+RUN curl -O https://xdebug.org/files/xdebug-2.6.0.tgz \
+&& tar -zxf xdebug-2.6.0.tgz \
+&& cd xdebug-2.6.0 \
+&& phpize \
+&& ./configure \
+&& make \
+&& make install \
+&& make test \
+&& echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+&& echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/xdebug.ini
+
+
+#RUN cp -rf ${WORK_HOME}/supervisord.conf /etc/supervisor/conf.d/sd.conf
+#
+#CMD ["supervisord"]

@@ -1,0 +1,10 @@
+version: '2'
+services:
+  swoole:
+      build: ./common
+      container_name: swoole
+      volumes:
+        - /opt/web/k12_swoole:/opt/web/k12_swoole
+      restart: always
+      ports:
+        - "9503:9503"

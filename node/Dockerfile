@@ -1,0 +1,1 @@
+FROM registry.cn-hangzhou.aliyuncs.com/kai12/node:8.15.0

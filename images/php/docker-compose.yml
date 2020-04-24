@@ -1,0 +1,11 @@
+version: '2'
+services:
+  php:
+    build: .
+    container_name: php
+    volumes:
+      - '/opt/web:/opt/web'
+      - '/opt/log:/opt/log'
+    restart: always
+    ports:
+      - '9000:9000'
