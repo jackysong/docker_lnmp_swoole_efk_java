@@ -1,1 +1,1 @@
-/nginx/sites-enabled/*.conf
+dockerfile/nginx/sites-enabled/*.conf

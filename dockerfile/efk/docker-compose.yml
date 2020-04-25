@@ -1,0 +1,25 @@
+version: "2"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    container_name: "fb-es"
+    privileged: true #容器可获得root权限
+    volumes:
+      - ./es/config:/usr/share/elasticsearch/config #卷挂载 前面为宿主机路径，后面为容器位置路径
+    ports:
+      - "9200:9200" #端口映射，前面为容器端口，后面为宿主机端口
+      - "9300:9300"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.5.4
+    container_name: fb-kibana
+    privileged: true
+    environment:
+      - ELASTICSEARCH_URL:"http://localhost:9200"
+      - OPS_INTERVAL:60000
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./kibana/log:/usr/share/kibana/log
+    ports:
+      - "5621:5621"
+    depends_on:
+      - elasticsearch
