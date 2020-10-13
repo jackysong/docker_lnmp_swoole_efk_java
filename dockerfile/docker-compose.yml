@@ -9,8 +9,8 @@ services:
     restart: always
     networks:
       - frontend
-    depends_on:
-      - php
+    # depends_on:
+    #   - php
     ports:
       - 80:80
       - 443:443
@@ -18,7 +18,7 @@ services:
     build: ./php
     container_name: php
     volumes:
-      - "~/Work:/opt/web"
+      - "~/Work:/opt/web:cached"
       - "~/Work/log:/opt/log"
     restart: always
     # extra_hosts:
