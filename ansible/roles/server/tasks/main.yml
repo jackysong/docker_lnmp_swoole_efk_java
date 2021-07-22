@@ -1,0 +1,23 @@
+---
+- name: Activate repositories
+  apt_repository: repo="{{item}}"
+  with_items:
+  - "deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse"
+  - "deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse"
+  - "deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse"
+  - "deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse"
+  - "deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse"
+  - "deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse"
+  - "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse"
+  - "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse"
+  - "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse"
+  - "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse"
+
+- name: Update repository cache
+  apt: update_cache=yes
+
+- name: ssh-keygen -t rsa -C "pull@k12cloud.cn"
+  shell:  mkdir ~/.ssh;
+          ssh-keygen -t rsa -C "pull@k12cloud.cn" -f ~/.ssh/id_rsa -q -N "";
+- name: copy id_rsa to client
+  copy: src=~/.ssh/id_rsa.pub   dest=~/.ssh/authorized_keys

@@ -1,0 +1,5 @@
+- name: '{{ file }}'
+  copy: src={{ file }}   dest={{ path }}
+
+
+

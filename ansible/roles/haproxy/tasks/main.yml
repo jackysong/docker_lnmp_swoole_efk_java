@@ -1,0 +1,12 @@
+---
+- name: enable the dedicated PPA
+  shell: add-apt-repository -y ppa:vbernat/haproxy-1.6
+
+- name: updates a server
+  apt: update_cache=yes
+
+- name: Installing HAProxy 1.6
+  apt: name={{ item }} state=present
+  with_items:
+      - haproxy
+

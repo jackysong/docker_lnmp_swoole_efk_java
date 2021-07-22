@@ -1,0 +1,72 @@
+###########全局配置参数，进程级的，用来控制Haproxy启动前的一些进程及系统设置#########
+global
+     daemon
+     maxconn 65535
+     nbproc 4
+     pidfile /var/run/haproxy.pid
+
+########配置一些默认的参数，可以被frontend，backend，listen段继承使用############
+defaults
+    mode http #默认的模式mode { tcp|http|health }，tcp是4层，http是7层，health只会返回OK
+    retries 2 #两次连接失败就认为是服务器不可用，也可以通过后面设置
+    option redispatch #当serverId对应的服务器挂掉后，强制定向到其他健康的服务器
+    option abortonclose #当服务器负载很高的时候，自动结束掉当前队列处理比较久的链接
+    option forwardfor
+    maxconn 65535 #默认的最大连接数
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+    log global
+    option httplog
+    log 127.0.0.1 local1 notice
+
+
+########stats########
+listen adminStats
+    bind *:1080
+    mode http
+    option httplog #采用http日志格式
+    maxconn 10
+    stats enable
+    stats refresh 5s
+    stats uri /admin?stats
+    stats realm Haproxy\ Statistics #
+    stats auth admin:admin
+    #stats hide-version
+    stats admin if TRUE
+    bind-process 1
+
+########集群服务器配置#################
+frontend webservers
+    bind *:80
+    #acl k12passport hdr_beg(host) balance.kai12.cn
+    #acl k12b hdr_beg(host) balance.b.kai12.cn
+    #acl k12c hdr_beg(host) balance.c.kai12.cn
+    #use_backend web if k12passport
+    #use_backend web if k12b
+    #use_backend web if k12c
+    use_backend servers
+
+frontend approute
+    bind *:443
+    mode tcp
+    option tcplog
+    use_backend approute
+
+
+backend servers
+    mode    http
+    balance roundrobin
+    cookie  babyserver insert nocache indirect
+    {{ servers01 }}
+    {{ servers02 }}
+    {{ servers03 }}
+
+backend approute
+    mode   tcp
+    option ssl-hello-chk
+    balance roundrobin
+    {{ approute01 }}
+    {{ approute02 }}
+    {{ approute03 }}
+

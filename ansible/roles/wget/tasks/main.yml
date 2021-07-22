@@ -1,0 +1,6 @@
+---
+- name: stop
+  shell: supervisorctl stop {{ program }}
+
+- name: cd
+  shell: cd {{ path }} && wget {{ sharepath }} -O {{ filename }} && chmod +x {{ filename }} && supervisorctl start {{ program }}

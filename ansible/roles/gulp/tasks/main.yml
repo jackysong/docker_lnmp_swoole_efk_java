@@ -1,0 +1,6 @@
+---
+- name: gulp production ---> {{ project }}
+  shell: docker exec dockerfile_node_1 bash -c "cd /opt/web/{{ project }} && cnpm install && gulp production"
+
+
+

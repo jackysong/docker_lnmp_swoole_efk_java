@@ -1,0 +1,6 @@
+---
+- name: checkout ---> {{ project_name }}
+  git: repo={{ repository }} dest={{ dest_path }} version={{ branch }} ssh_opts="-o StrictHostKeyChecking=no" accept_hostkey=yes force=yes
+
+
+

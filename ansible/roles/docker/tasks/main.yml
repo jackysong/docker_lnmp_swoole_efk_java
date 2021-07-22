@@ -1,0 +1,23 @@
+---
+- name: mkdir
+  file: path={{ item }} state=directory
+  with_items:
+      - '/opt'
+      - '/opt/data'
+      - '/opt/log/nginx'
+      - '/opt/log/php'
+      - '/opt/log/redis'
+      - '/opt/web'
+
+- name: install docker from aliyuncs mirror
+  shell: curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -
+#   shell: curl -sSL https://get.docker.com/ | sh -
+
+- name: change DOCKER_OPTS
+  shell: echo "DOCKER_OPTS=\"\$DOCKER_OPTS --registry-mirror=https://ytu9d8zj.mirror.aliyuncs.com\""
+#   shell: curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://e69374c5.m.daocloud.io
+  notify: restart docker
+
+- name: install docker-compose
+  dnf:
+      name: name=docker-compose
