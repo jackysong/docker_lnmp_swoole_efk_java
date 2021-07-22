@@ -1,0 +1,2 @@
+[test]
+127.0.0.1 ansible_ssh_user=root ansible_ssh_pass=your_password

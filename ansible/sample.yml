@@ -1,5 +1,5 @@
 ---
-- hosts: hz-test
+- hosts: test
   vars:
 
   roles:
